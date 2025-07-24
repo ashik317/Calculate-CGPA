@@ -74,12 +74,24 @@ WSGI_APPLICATION = 'Calculate_CGPA.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+from decouple import config
+DJANGO_ENV = config("DJANGO_ENV", default="local")
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": config("POSTGRES_DB"),
+        "USER": config("POSTGRES_USER"),
+        "PASSWORD": config("POSTGRES_PASSWORD"),
+        "HOST": (
+            config("POSTGRES_DOCKER_HOST")
+            if DJANGO_ENV == "docker"
+            else config("POSTGRES_LOCAL_HOST")
+        ),
+        "PORT": config("POSTGRES_PORT"),
     }
 }
+
 
 
 # Password validation
